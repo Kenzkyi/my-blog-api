@@ -11,7 +11,6 @@ Description: This Api provides endpoints to view all articles, view a single art
 - `PUT /articles/:id`: Update an existing article by its ID.
 - `PATCH /articles/:id/publish`: Update the state of an article (draft or published).
 - `DELETE /articles/:id`: Delete an article by its ID.
-- `POST /auth/logout`: Log out the current user.
 
 #### Endpoints that do not require authentication are publicly accessible and can be accessed by anyone. The following endpoints are available:
 
@@ -58,16 +57,29 @@ Description: This Api provides endpoints to view all articles, view a single art
 
 ###### Query parameters can be used to filter the articles by publication state (published or draft) and get articles by pages with a limit of 20 articles per page. For example, `GET /articles/me?state=published&page=1` will return only the published articles created by the authenticated user, first page.
 
-- `POST /articles`: This endpoint creates a new article. It requires authentication and expects a JSON object in the request body containing the article's title, description, content, and tags. It returns an object having a `data` property that contains the newly created article object.
+- `POST /articles`: This endpoint creates a new article. It requires authentication and expects a JSON object in the request body containing the article's title, description, body, and tags. e.g
+  `{
+  "title": "My First Blog",
+  "description": "This is my first blog post",
+  "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "tags": ["blog", "first", "introduction"]
+}`
+  It returns an object having a `data` property that contains the newly created article object.
 - `PUT /articles/:id`: This endpoint updates an existing article by its ID. It requires authentication and expects a JSON object in the request body containing the updated article's title, description, content, and tags. It returns an object having a `data` property that contains the updated article object. Please note that the ID is passed as a URL parameter.
 - `PATCH /articles/:id/publish`: This endpoint updates the state of an article to published. It requires authentication. It returns an object having a `data` property that contains the updated article object. Please note that the ID is passed as a URL parameter.
 - `DELETE /articles/:id`: This endpoint deletes an article by its ID. It requires authentication and returns an object having a `data` property that contains a success message. Please note that the ID is passed as a URL parameter.
 
 #### Authentication Endpoints
 
-- `POST /auth/signup`: This endpoint allows a new user to sign up. It expects a JSON object in the request body containing the user's first name, last name, email, and password. It returns an object having a `data` property that contains the newly created user object.
-- `POST /auth/login`: This endpoint allows an existing user to log in. It expects a JSON object in the request body containing the user's email and password. It returns an object having a `data` property that contains a success message and a JSON Web Token (JWT) for authentication.
-- `POST /auth/logout`: This endpoint allows the current user to log out. It requires authentication and returns an object having a `data` property that contains a success message.
+- `POST /auth/signup`: This endpoint allows a new user to sign up. It expects a JSON object in the request body containing the user's first name, last name, email, and password. e.g
+  `{
+  "first_name": "John",
+  "last_name": "Doe",
+  "email": "john@example.com",
+  "password": "john123"
+}`
+  It returns an object having a `data` property that contains the newly created user object.
+- `POST /auth/login`: This endpoint allows an existing user to log in. It expects a JSON object in the request body containing the user's email and password. It returns an object having a `data` property that contains the user object and a JSON Web Token (JWT) for authentication.
 
 ### Running the Api
 
@@ -77,7 +89,8 @@ To run the Api, follow these steps:
 2. Navigate to the project directory and run `npm install` to install the dependencies.
 3. Create a `.env` file in the root directory and add the following environment variables:
 
-```MONGODB_URI=your_mongodb_uri
+```
+MONGODB_URI=your_mongodb_uri
 JWT_SECRET=your_jwt_secret
 PORT=your_port_number
 ```

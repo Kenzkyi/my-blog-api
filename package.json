@@ -1,9 +1,11 @@
 {
   "name": "my-blog-api",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "start": "node main.js",
+    "dev": "nodemon main.js"
   },
   "keywords": [],
   "author": "",
@@ -12,7 +14,13 @@
   "dependencies": {
     "dotenv": "^17.2.4",
     "express": "^5.2.1",
-    "mongoose": "^9.2.0"
+    "joi": "^18.0.2",
+    "jsonwebtoken": "^9.0.3",
+    "mongodb-memory-server": "^11.0.1",
+    "mongoose": "^9.2.0",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "passport-local-mongoose": "^9.0.1"
   },
   "devDependencies": {
     "jest": "^30.2.0",
