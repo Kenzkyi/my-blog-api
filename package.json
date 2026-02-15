@@ -1,7 +1,7 @@
 {
   "name": "my-blog-api",
   "version": "1.0.0",
-  "main": "app.js",
+  "main": "main.js",
   "scripts": {
     "test": "jest",
     "start": "node main.js",

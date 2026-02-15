@@ -116,3 +116,147 @@ Tokens are used to authenticate users and protect certain endpoints. When a user
 `Authorization: Bearer <token>`
 
 - Please note that the token is valid for 1 hour, and users will need to log in again to obtain a new token after it expires.
+
+### Input Validation
+
+#### User Registration (`POST /auth/signup`)
+
+- `email`: Must be a valid email format (required)
+- `first_name`: Minimum 2 characters (required)
+- `last_name`: Minimum 2 characters (required)
+- `password`: Minimum 6 characters (required)
+
+#### Article Creation (`POST /articles`)
+
+- `title`: String (required, must be unique)
+- `description`: String (optional)
+- `body`: String (optional but recommended)
+- `tags`: Array of strings (optional)
+
+#### Article Update (`PUT /articles/:id`)
+
+- All fields are optional; only provided fields will be updated
+- `title`: Cannot be updated to a value that already exists
+- Reading time is automatically recalculated after update
+
+### Response Format
+
+All API responses follow a standardized JSON format:
+
+**Success Response:**
+
+```json
+{
+  "status": "success",
+  "message": "Operation completed successfully",
+  "data": {
+    /* response data */
+  }
+}
+```
+
+**Error Response:**
+
+```json
+{
+  "status": "error",
+  "message": "Error description",
+  "data": null
+}
+```
+
+### Common HTTP Status Codes
+
+| Code | Meaning                                           |
+| ---- | ------------------------------------------------- |
+| 200  | Request successful                                |
+| 400  | Bad request (validation error, article not found) |
+| 403  | Forbidden (unauthorized user trying to modify)    |
+| 500  | Internal server error                             |
+
+### Pagination Details
+
+- **Default page size**: 20 articles per page
+- **Page parameter**: `?page=1` (1-indexed)
+- **Example**: `GET /articles?page=2` returns articles 21-40
+
+### Search and Filter Examples
+
+#### Search by Author and Filter by Tag
+
+```
+GET /articles?author=john&tags=technology&page=1&sort=timestamp:desc
+```
+
+#### Multiple Tags (comma-separated)
+
+```
+GET /articles?tags=javascript,nodejs,backend
+```
+
+#### Get User's Draft Articles
+
+```
+GET /articles/me?state=draft&page=1
+```
+
+#### Sort by Most Read
+
+```
+GET /articles?sort=read_count:desc
+```
+
+### Middleware and Authorization
+
+#### `validateArticleOwnership`
+
+- Ensures only the article author can update, publish, or delete their article
+- Applied to: `PUT /articles/:id`, `PATCH /articles/:id/publish`, `DELETE /articles/:id`
+- Returns 403 Forbidden if user is not the author
+
+#### `validateExistingTitle`
+
+- Prevents duplicate article titles
+- Applied to: `POST /articles`
+- Returns 400 Bad Request if title already exists
+
+#### JWT Authentication
+
+- Verifies Bearer token in Authorization header
+- Applied to all protected endpoints
+- Returns 401 Unauthorized if token is missing or invalid
+
+### Development Setup
+
+To set up the project for development:
+
+```bash
+# Install dependencies
+npm install
+
+# Create .env file
+echo "MONGODB_URI=your_mongodb_uri" > .env
+echo "JWT_SECRET=your_jwt_secret" >> .env
+echo "PORT=8000" >> .env
+
+# Start in development mode with hot reload
+npm run dev
+
+# Start in production
+npm start
+```
+
+### Features Implemented
+
+- ✅ User authentication with JWT (1-hour expiry)
+- ✅ Article CRUD operations with ownership protection
+- ✅ Draft and published article states
+- ✅ Pagination with configurable page size
+- ✅ Advanced filtering (author, title, tags)
+- ✅ Multi-field sorting (timestamp, read_count, reading_time)
+- ✅ Read count tracking per article
+- ✅ Automatic reading time calculation
+- ✅ Request validation with Joi
+- ✅ Comprehensive test coverage with Jest and Supertest
+- ✅ Standardized response format across all endpoints
+- ✅ Error handling and validation middleware
